@@ -21,7 +21,6 @@ import TermsConditions from './pages/policies/TermsConditions';
 import MerchantPolicy from './pages/policies/MerchantPolicy';
 import { useCart } from './hooks/useCart';
 import { AuthProvider } from './context/AuthContext';
-import { initEmailJS } from './lib/emailjs';
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -48,10 +47,6 @@ const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { items, addToCart, removeFromCart, updateQuantity, total, clearCart } = useCart();
-
-  useEffect(() => {
-    initEmailJS();
-  }, []);
 
   const handleAddToCart = (product: any) => {
     addToCart(product);

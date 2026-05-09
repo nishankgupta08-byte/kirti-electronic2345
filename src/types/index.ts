@@ -67,19 +67,3 @@ export interface Order {
 }
 
 export type OrderStatus = 'idle' | 'loading' | 'success' | 'error';
-
-export interface CustomerEmailParams {
-  name: string;
-  email: string;
-  retailerId: string;
-  shopName: string;
-  orderId: string;
-  items: CartItem[];
-  total: number;
-  address: string;
-}
-
-export interface OwnerEmailParams extends CustomerEmailParams {
-  phone: string;
-  notes: string;
-}

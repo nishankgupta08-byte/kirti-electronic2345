@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { CartItem, Order, OrderStatus } from '../types';
-import { sendCustomerEmail, sendOwnerEmail } from '../lib/emailjs';
+import { submitOrderForm } from '../lib/formspree';
 import { sendWhatsAppNotification } from '../lib/whatsapp';
 
 export const useOrder = (items: CartItem[], total: number, clearCart: () => void) => {
   const [status, setStatus] = useState<OrderStatus>('idle');
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const submitOrder = async (formData: {
     name: string;
@@ -19,12 +20,13 @@ export const useOrder = (items: CartItem[], total: number, clearCart: () => void
     notes: string;
   }) => {
     setStatus('loading');
+    setErrorMsg('');
 
     try {
-      // 1. Generate order ID
+      // Step 1 -- Generate order ID
       const generatedOrderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
 
-      // 2. Build order object
+      // Step 2 -- Build order object
       const orderData: Order = {
         orderId: generatedOrderId,
         retailerId: formData.retailerId,
@@ -40,52 +42,48 @@ export const useOrder = (items: CartItem[], total: number, clearCart: () => void
         createdAt: serverTimestamp() as any // Firestore handles this
       };
 
-      // 3. Save to Firestore
+      // Step 3 -- Save to Firestore (always first -- source of truth)
       await addDoc(collection(db, 'orders'), orderData);
 
-      // 4. Send emails simultaneously
-      await Promise.all([
-        sendCustomerEmail({
-          name: formData.name,
-          email: formData.email,
-          retailerId: formData.retailerId,
-          shopName: formData.shopName,
-          orderId: generatedOrderId,
-          items: items,
-          total: total,
-          address: formData.address
-        }),
-        sendOwnerEmail({
-          name: formData.name,
-          email: formData.email,
-          retailerId: formData.retailerId,
-          shopName: formData.shopName,
-          orderId: generatedOrderId,
-          items: items,
-          total: total,
-          address: formData.address,
-          phone: formData.phone,
-          notes: formData.notes
-        })
-      ]);
+      // Step 4 -- Submit to Formspree (replaces both EmailJS emails)
+      await submitOrderForm({
+        orderId: generatedOrderId,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        shopName: formData.shopName,
+        retailerId: formData.retailerId,
+        shippingAddress: formData.address,
+        specialInstructions: formData.notes,
+        items: items.map(item => ({
+          name: item.name,
+          qty: item.quantity,
+          unitPrice: item.price,
+          subtotal: item.quantity * item.price,
+        })),
+        total: total,
+      });
 
-      // 5. WhatsApp notification
+      // Step 5 -- WhatsApp deep-link (unchanged)
       sendWhatsAppNotification(orderData);
 
-      // 6. Success handling
+      // Step 6 -- Clear cart + set success
       setOrderId(generatedOrderId);
       setStatus('success');
       clearCart();
-    } catch (err) {
-      console.error('Order submission failed:', err);
+    } catch (err: any) {
+      console.error('Order submission error:', err);
       setStatus('error');
+      setErrorMsg(err.message || 'Submission failed. Please try again.');
+      // Cart is NOT cleared on error
     }
   };
 
   const resetStatus = () => {
     setStatus('idle');
     setOrderId(null);
+    setErrorMsg('');
   };
 
-  return { submitOrder, status, orderId, resetStatus };
+  return { submitOrder, status, orderId, errorMsg, resetStatus };
 };
