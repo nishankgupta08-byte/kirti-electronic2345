@@ -60,7 +60,7 @@ const App: React.FC = () => {
 
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/kirti-electronic2345">
         <AppContent 
           items={items} 
           isCartOpen={isCartOpen} 
