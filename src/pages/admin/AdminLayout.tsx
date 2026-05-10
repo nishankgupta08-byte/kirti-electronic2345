@@ -10,10 +10,10 @@ const AdminLayout: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-slate-50 flex items-center justify-center z-[100]">
+      <div className="fixed inset-0 bg-white flex items-center justify-center z-[100]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-sky-500 animate-spin" />
-          <p className="text-slate-500 font-medium animate-pulse">Initializing Terminal...</p>
+          <Loader2 className="w-12 h-12 text-violet-600 animate-spin" />
+          <p className="text-zinc-500 font-medium animate-pulse">Initializing Terminal...</p>
         </div>
       </div>
     );
@@ -22,17 +22,16 @@ const AdminLayout: React.FC = () => {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-sky-100 selection:text-sky-900 overflow-x-hidden">
-        {/* Force default cursor in admin panel */}
-        <style dangerouslySetInnerHTML={{ __html: `
-            * { cursor: default !important; }
-            button, a, select, input[type="checkbox"], .cursor-pointer { cursor: pointer !important; }
-        ` }} />
+    <div className="min-h-screen bg-white font-sans overflow-x-hidden">
+      <style dangerouslySetInnerHTML={{ __html: `
+          * { cursor: default !important; }
+          button, a, select, input[type="checkbox"], .cursor-pointer { cursor: pointer !important; }
+      ` }} />
 
       <AdminSidebar />
       <div className="lg:pl-64 flex flex-col min-h-screen">
-        <AdminTopbar title="Dashboard" /> {/* Title will be dynamic per page eventually */}
-        <main className="flex-1 p-6 lg:p-10 max-w-full">
+        <AdminTopbar title="Dashboard" />
+        <main className="flex-1 p-6 lg:p-10 max-w-full bg-zinc-50">
           <Outlet />
         </main>
       </div>

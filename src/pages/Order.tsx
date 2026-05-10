@@ -34,23 +34,23 @@ const Order: React.FC = () => {
 
   if (status === 'success' && orderId) {
     return (
-      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto min-h-screen flex items-center justify-center">
+      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto min-h-screen flex items-center justify-center bg-white">
         <OrderSuccess orderId={orderId} email={user?.email || ''} />
       </div>
     );
   }
 
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
+    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen bg-white">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-12"
       >
-        <span className="text-sky-500 font-mono text-[10px] font-bold tracking-[0.4em] uppercase mb-4 block">Merchant Secure Checkout</span>
-        <h1 className="text-5xl font-black mb-4 tracking-tighter text-white leading-none">Pre-Booking Dispatch</h1>
-        <p className="text-slate-400 max-w-lg font-medium">
-          Finalize your bulk allocation request. Our dispatch team will verify dealer 
+        <span className="text-violet-600 font-mono text-[10px] font-bold tracking-[0.4em] uppercase mb-2 block">Merchant Secure Checkout</span>
+        <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-zinc-900 leading-none">Pre-Booking Dispatch</h1>
+        <p className="text-zinc-500 max-w-lg font-medium">
+          Finalize your bulk allocation request. Our dispatch team will verify dealer
           credentials before confirming warehouse release.
         </p>
       </motion.div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
@@ -56,9 +56,9 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router basename="/kirti-electronic2345">
-        <AppContent 
-          items={items} 
-          isCartOpen={isCartOpen} 
+        <AppContent
+          items={items}
+          isCartOpen={isCartOpen}
           setIsCartOpen={setIsCartOpen}
           handleAddToCart={handleAddToCart}
           updateQuantity={updateQuantity}
@@ -70,36 +70,36 @@ const App: React.FC = () => {
   );
 };
 
-const AppContent: React.FC<any> = ({ 
-  items, isCartOpen, setIsCartOpen, handleAddToCart, updateQuantity, removeFromCart, total 
+const AppContent: React.FC<any> = ({
+  items, isCartOpen, setIsCartOpen, handleAddToCart, updateQuantity, removeFromCart, total
 }) => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
 
   return (
-    <div className={`relative min-h-screen flex flex-col ${isAdmin ? 'bg-slate-50' : 'bg-transparent'}`}>
+    <div className={`relative min-h-screen flex flex-col ${isAdmin ? 'bg-white' : 'bg-transparent'}`}>
       {!isAdmin && <ThreeBackground />}
-      <Toaster 
+      <Toaster
         position="top-center"
         toastOptions={{
           style: {
-            background: isAdmin ? '#1e293b' : '#0f172a',
-            color: '#f8fafc',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: isAdmin ? '#09090B' : '#FAFAFA',
+            color: isAdmin ? '#FAFAFA' : '#3F3F46',
+            border: '1px solid rgba(0, 0, 0, 0.08)',
             borderRadius: '16px',
             fontSize: '14px',
             fontWeight: '500',
           }
         }}
       />
-      
+
       {!isAdmin && (
-        <Navbar 
-          cartCount={items.length} 
-          onOpenCart={() => setIsCartOpen(true)} 
+        <Navbar
+          cartCount={items.length}
+          onOpenCart={() => setIsCartOpen(true)}
         />
       )}
-      
+
       <PageWrapper>
         <Routes>
           <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
@@ -126,7 +126,7 @@ const AppContent: React.FC<any> = ({
       {!isAdmin && <Footer />}
 
       {!isAdmin && (
-        <CartDrawer 
+        <CartDrawer
           isOpen={isCartOpen}
           onClose={() => setIsCartOpen(false)}
           items={items}

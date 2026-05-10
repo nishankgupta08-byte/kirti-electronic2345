@@ -23,13 +23,13 @@ const EmailLoginForm: React.FC = () => {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      
+
       const adminDoc = await getDoc(doc(db, 'admins', auth.currentUser!.uid));
       const isAdmin = adminDoc.exists();
 
       const retailerDoc = await getDoc(doc(db, 'retailers', auth.currentUser!.uid));
       const data = retailerDoc.data();
-      
+
       if (!isAdmin && (!data || !data.isApproved)) {
         toast.error("Account not approved. Contact admin.");
         await signOut(auth);
@@ -64,16 +64,16 @@ const EmailLoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleLogin} className="space-y-6">
+    <form onSubmit={handleLogin} className="space-y-5">
       <div className="space-y-2">
-        <label className="text-xs font-mono font-bold uppercase tracking-widest text-slate-500 ml-1">Email Address</label>
+        <label className="text-xs font-mono font-bold uppercase tracking-widest text-zinc-500 ml-1">Email Address</label>
         <div className="relative group">
-          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-500 transition-colors" size={18} />
+          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-violet-500 transition-colors" size={18} />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white focus:border-sky-500/50 focus:bg-white/10 outline-none transition-all font-medium"
+            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-4 pl-12 pr-4 text-zinc-900 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 outline-none transition-all font-medium placeholder:text-zinc-400"
             placeholder="retailer@company.com"
           />
         </div>
@@ -81,28 +81,28 @@ const EmailLoginForm: React.FC = () => {
 
       <div className="space-y-2">
         <div className="flex justify-between items-center px-1">
-          <label className="text-xs font-mono font-bold uppercase tracking-widest text-slate-500">Password</label>
-          <button 
+          <label className="text-xs font-mono font-bold uppercase tracking-widest text-zinc-500">Password</label>
+          <button
             type="button"
             onClick={handleForgotPassword}
-            className="text-[10px] font-mono font-bold uppercase tracking-widest text-sky-500 hover:text-sky-400 transition-colors"
+            className="text-[10px] font-mono font-bold uppercase tracking-widest text-violet-600 hover:text-violet-700 transition-colors"
           >
             Forgot Password?
           </button>
         </div>
         <div className="relative group">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-500 transition-colors" size={18} />
+          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-violet-500 transition-colors" size={18} />
           <input
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-white focus:border-sky-500/50 focus:bg-white/10 outline-none transition-all font-medium"
+            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-4 pl-12 pr-12 text-zinc-900 focus:border-violet-500 focus:ring-2 focus:ring-violet-100 outline-none transition-all font-medium placeholder:text-zinc-400"
             placeholder="••••••••"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -112,7 +112,7 @@ const EmailLoginForm: React.FC = () => {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 rounded-2xl shadow-lg shadow-sky-500/25 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
+        className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-violet-600/25 transition-all flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50"
       >
         {loading ? <Loader2 className="animate-spin" size={20} /> : "Sign In to Portal"}
       </button>

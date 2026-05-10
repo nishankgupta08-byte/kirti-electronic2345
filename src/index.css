@@ -1,14 +1,31 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap');
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  --color-brand-primary: #0ea5e3; /* Sky 500 */
-  --color-brand-secondary: #0284c7; /* Sky 600 */
-  --color-accent: #020617; /* Slate 950 */
-  
+  --color-kirti-white: #FFFFFF;
+  --color-kirti-offwhite: #FAFAFA;
+  --color-kirti-surface: #F4F4F5;
+  --color-kirti-border: #E4E4E7;
+  --color-kirti-ink: #09090B;
+  --color-kirti-body: #3F3F46;
+  --color-kirti-muted: #A1A1AA;
+  --color-kirti-violet: #7C3AED;
+  --color-kirti-violet-hover: #6D28D9;
+  --color-kirti-violet-light: #EDE9FE;
+  --color-kirti-rose: #F43F5E;
+  --color-kirti-rose-light: #FFF1F2;
+  --color-kirti-amber: #F59E0B;
+  --color-kirti-amber-light: #FFFBEB;
+  --color-kirti-emerald: #10B981;
+  --color-kirti-emerald-light: #ECFDF5;
+  --color-kirti-sky: #0EA5E9;
+  --color-kirti-sky-light: #F0F9FF;
+
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-3xl: 2.5rem;
@@ -16,30 +33,86 @@
 
 @layer base {
   body {
-    @apply bg-[#020617] text-slate-200 antialiased selection:bg-sky-500/30 selection:text-white;
-    font-family: var(--font-sans);
+    @apply bg-white text-zinc-600 antialiased;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans font-black tracking-tighter text-white;
+    font-family: 'Poppins', sans-serif;
+    color: #09090B;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 }
 
+/* ── CUSTOM SCROLLBAR ───────────────────────── */
+::-webkit-scrollbar       { width: 5px; }
+::-webkit-scrollbar-track { background: #FAFAFA; }
+::-webkit-scrollbar-thumb { background: #A78BFA; border-radius: 99px; }
+
+/* ── SELECTION ──────────────────────────────── */
+::selection { background: #EDE9FE; color: #7C3AED; }
+
+/* ── MARQUEE ────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── SCROLLBAR HIDE ─────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── GRADIENT TEXT ──────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #7C3AED 0%, #0EA5E9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── GLASS VARIANTS ─────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+  background: rgba(9, 9, 11, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── CONFETTI ───────────────────────────────── */
+@keyframes confetti-burst {
+  0%   { transform: translate(0,0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--dx, 0), var(--dy, 0)) rotate(720deg); opacity: 0; }
+}
+
+/* ── UNDERLINE HOVER ────────────────────────── */
+.hover-underline {
+  position: relative;
+}
+.hover-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 0; height: 2px;
+  background: linear-gradient(90deg, #7C3AED, #0EA5E9);
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+.hover-underline:hover::after { width: 100%; }
+
 .glass-morphism {
-  @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  @apply bg-white/70 backdrop-blur-xl border border-zinc-100;
 }
 
 .glass-morphism-dark {
-  @apply bg-slate-950/50 backdrop-blur-md border border-white/5;
-}
-
-.sky-glow {
-  text-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
-}
-
-.mono-data {
-  font-family: var(--font-mono);
-  @apply text-[10px] tracking-widest uppercase opacity-50;
+  @apply bg-zinc-950/50 backdrop-blur-md border border-white/5;
 }
 
 .no-scrollbar::-webkit-scrollbar {

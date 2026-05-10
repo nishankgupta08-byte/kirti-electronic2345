@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Menu, Search, User, LogOut, Package } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { ShoppingCart, Menu, Search, Package, LogOut } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
@@ -26,36 +26,36 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-40 bg-white/5 backdrop-blur-xl border-b border-white/10 px-6 py-4 flex items-center justify-between">
+    <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-zinc-100 h-16 flex items-center justify-between px-6">
       <div className="flex items-center gap-8">
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="text-sky-400 text-2xl group-hover:scale-110 transition-transform">⚡</span>
-          <span className="text-xl font-bold tracking-tighter text-white">
-            <span className="text-sky-500">KIRTI</span> ELECTRONIC
+          <span className="text-xl font-bold tracking-tight">
+            <span className="gradient-text">KIRTI</span>
+            <span className="text-zinc-900"> ELECTRONIC</span>
           </span>
         </Link>
-        <div className="hidden md:flex gap-6 text-sm font-medium text-slate-400">
-          <Link to="/" className="hover:text-white transition-colors">Home</Link>
-          <Link to="/products" className="hover:text-white transition-colors">Products</Link>
-          {isApproved && <Link to="/order" className="hover:text-white transition-colors">Bookings</Link>}
+        <div className="hidden md:flex gap-8 text-sm font-medium text-zinc-500">
+          <Link to="/" className="hover:text-zinc-900 hover-underline transition-colors duration-200">Home</Link>
+          <Link to="/products" className="hover:text-zinc-900 hover-underline transition-colors duration-200">Products</Link>
+          {isApproved && <Link to="/order" className="hover:text-zinc-900 hover-underline transition-colors duration-200">Bookings</Link>}
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
-        <button className="text-slate-400 hover:text-white transition-colors">
-          <Search size={20} />
+      <div className="flex items-center gap-3">
+        <button className="p-2 rounded-xl hover:bg-zinc-100 transition-colors duration-200">
+          <Search size={20} className="text-zinc-700" />
         </button>
-        
+
         {user ? (
           <div className="relative">
-            <button 
+            <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 hover:border-sky-500/50 transition-all active:scale-95"
+              className="w-10 h-10 rounded-xl overflow-hidden border border-zinc-200 hover:border-violet-300 transition-all active:scale-95"
             >
               {user.photoURL ? (
                 <img src={user.photoURL} alt={user.displayName || ''} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-sky-500 flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-full h-full bg-violet-600 flex items-center justify-center text-white font-bold text-sm">
                   {user.displayName?.charAt(0) || user.email?.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -69,25 +69,25 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-4 w-64 bg-slate-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden py-2"
+                    className="absolute right-0 mt-4 w-64 bg-white border border-zinc-100 rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.08)] overflow-hidden py-2"
                   >
-                    <div className="px-4 py-3 border-b border-white/5">
-                      <p className="text-sm font-bold text-white truncate">{user.displayName || 'Retail Member'}</p>
-                      <p className="text-[10px] font-mono text-slate-500 truncate">{retailerData?.shopName || user.email}</p>
+                    <div className="px-4 py-3 border-b border-zinc-100">
+                      <p className="text-sm font-bold text-zinc-900 truncate">{user.displayName || 'Retail Member'}</p>
+                      <p className="text-[10px] text-zinc-500 truncate">{retailerData?.shopName || user.email}</p>
                     </div>
                     <div className="py-2">
-                       <button 
+                      <button
                         onClick={() => { navigate('/order'); setIsProfileOpen(false); }}
-                        className="w-full px-4 py-2 text-left text-xs font-medium text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-3 transition-colors"
+                        className="w-full px-4 py-2 text-left text-xs font-medium text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 flex items-center gap-3 transition-colors"
                       >
                         <Package size={16} />
                         Booking History
                       </button>
                     </div>
-                    <div className="pt-2 border-t border-white/5">
-                      <button 
+                    <div className="pt-2 border-t border-zinc-100">
+                      <button
                         onClick={handleLogout}
-                        className="w-full px-4 py-3 text-left text-xs font-bold text-red-500 hover:bg-red-500/5 flex items-center gap-3 transition-colors"
+                        className="w-full px-4 py-3 text-left text-xs font-bold text-rose-500 hover:bg-rose-50 flex items-center gap-3 transition-colors"
                       >
                         <LogOut size={16} />
                         Sign Out Portal
@@ -99,24 +99,22 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
             </AnimatePresence>
           </div>
         ) : (
-          <Link to="/login" className="hidden sm:block border border-sky-500/30 text-sky-400 px-5 py-2 rounded-xl hover:bg-sky-500/10 transition-all text-sm font-black tracking-tight outline-none">
+          <Link to="/login" className="text-sm font-semibold bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl transition-all duration-200 hover:shadow-[0_4px_16px_rgba(124,58,237,0.35)] active:scale-95">
             Retailer Login
           </Link>
         )}
 
-        <button 
+        <button
           onClick={onOpenCart}
-          className="relative text-slate-400 hover:text-sky-400 transition-colors"
+          className="relative p-2 rounded-xl hover:bg-zinc-100 transition-colors duration-200"
         >
-          <ShoppingCart size={22} />
+          <ShoppingCart size={20} className="text-zinc-700" />
           {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-sky-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold shadow-[0_0_10px_rgba(14,165,233,0.5)]">
-              {cartCount}
-            </span>
+            <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-violet-600 text-white text-[10px] font-bold flex items-center justify-center">{cartCount}</span>
           )}
         </button>
-        <button className="md:hidden text-slate-400 hover:text-white transition-colors">
-          <Menu size={22} />
+        <button className="md:hidden p-2 rounded-xl hover:bg-zinc-100 transition-colors duration-200">
+          <Menu size={22} className="text-zinc-700" />
         </button>
       </div>
     </nav>
