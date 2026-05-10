@@ -55,7 +55,7 @@ const App: React.FC = () => {
 
   return (
     <AuthProvider>
-      <Router basename="/kirti-electronic2345">
+      <Router key="router" basename={import.meta.env.BASE_URL}>
         <AppContent
           items={items}
           isCartOpen={isCartOpen}
