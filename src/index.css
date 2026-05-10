@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -115,10 +115,33 @@
   @apply bg-zinc-950/50 backdrop-blur-md border border-white/5;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* ── NO SCROLLBAR ───────────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ════════════════════════════════════════════════
+   MOBILE-SPECIFIC OVERRIDES
+   ════════════════════════════════════════════════ */
+
+/* Prevent tap highlight flash on mobile */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* iOS safe area support */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+.mb-safe { margin-bottom: env(safe-area-inset-bottom, 16px); }
+
+/* Disable cursor:none on mobile (no cursor on touch) */
+@media (max-width: 767px) {
+  html, body { cursor: auto !important; }
+
+  /* Prevent zoom on input focus (iOS) */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
+  /* Tighter section padding */
+  .section-pad { padding: 1.5rem 1.25rem; }
+
+  /* Touch feedback */
+  button:active, a:active { opacity: 0.85; }
 }

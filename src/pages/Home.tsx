@@ -1,8 +1,10 @@
 import React from 'react';
 import Hero from '../components/Hero';
+import MobileHero from '../components/mobile/MobileHero';
 import ProductGrid from '../components/ProductGrid';
 import { useProducts } from '../hooks/useProducts';
 import { Product } from '../types';
+import { useDeviceType } from '../utils/useDeviceType';
 import { ArrowRight, Package, Zap, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
@@ -12,12 +14,14 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ onAddToCart }) => {
+  const device = useDeviceType();
+  const isMobile = device === 'mobile';
   const { products, loading } = useProducts('All');
-  const featured = products.slice(0, 4);
+  const featured = products.slice(0, isMobile ? 2 : 4);
 
   return (
     <div className="pb-20">
-      <Hero />
+      {isMobile ? <MobileHero /> : <Hero />}
 
       {/* Feature Strip */}
       <section className="px-6 max-w-7xl mx-auto py-16">

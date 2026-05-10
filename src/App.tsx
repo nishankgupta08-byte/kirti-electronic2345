@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
+import { useDeviceType } from './utils/useDeviceType';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ThreeBackground from './components/ThreeBackground';
 import CartDrawer from './components/CartDrawer';
+import MobileLayout from './components/mobile/MobileLayout';
+import MobileCartDrawer from './components/mobile/MobileCartDrawer';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Login from './pages/Login';
@@ -47,6 +50,8 @@ const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { items, addToCart, removeFromCart, updateQuantity, total, clearCart } = useCart();
+  const device = useDeviceType();
+  const isMobile = device === 'mobile';
 
   const handleAddToCart = (product: any) => {
     addToCart(product);
@@ -57,6 +62,7 @@ const App: React.FC = () => {
     <AuthProvider>
       <Router key="router" basename={import.meta.env.BASE_URL}>
         <AppContent
+          isMobile={isMobile}
           items={items}
           isCartOpen={isCartOpen}
           setIsCartOpen={setIsCartOpen}
@@ -71,11 +77,62 @@ const App: React.FC = () => {
 };
 
 const AppContent: React.FC<any> = ({
-  items, isCartOpen, setIsCartOpen, handleAddToCart, updateQuantity, removeFromCart, total
+  isMobile,
+  items,
+  isCartOpen,
+  setIsCartOpen,
+  handleAddToCart,
+  updateQuantity,
+  removeFromCart,
+  total,
 }) => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
 
+  // Mobile layout
+  if (isMobile && !isAdmin) {
+    return (
+      <MobileLayout
+        cartCount={items.length}
+        onOpenCart={() => setIsCartOpen(true)}
+      >
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: '#FAFAFA',
+              color: '#3F3F46',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              borderRadius: '16px',
+              fontSize: '13px',
+              fontWeight: '500',
+            },
+          }}
+        />
+        <PageWrapper>
+          <Routes>
+            <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
+            <Route path="/products" element={<Products onAddToCart={handleAddToCart} />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-conditions" element={<TermsConditions />} />
+            <Route path="/merchant-policy" element={<MerchantPolicy />} />
+          </Routes>
+        </PageWrapper>
+        <MobileCartDrawer
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          items={items}
+          onUpdateQuantity={updateQuantity}
+          onRemove={removeFromCart}
+          total={total}
+        />
+      </MobileLayout>
+    );
+  }
+
+  // Desktop layout (or admin)
   return (
     <div className={`relative min-h-screen flex flex-col ${isAdmin ? 'bg-white' : 'bg-transparent'}`}>
       {!isAdmin && <ThreeBackground />}
@@ -89,7 +146,7 @@ const AppContent: React.FC<any> = ({
             borderRadius: '16px',
             fontSize: '14px',
             fontWeight: '500',
-          }
+          },
         }}
       />
 
@@ -106,13 +163,9 @@ const AppContent: React.FC<any> = ({
           <Route path="/products" element={<Products onAddToCart={handleAddToCart} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/order" element={<Order />} />
-
-          {/* Policy Routes */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-conditions" element={<TermsConditions />} />
           <Route path="/merchant-policy" element={<MerchantPolicy />} />
-
-          {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<AdminProducts />} />
