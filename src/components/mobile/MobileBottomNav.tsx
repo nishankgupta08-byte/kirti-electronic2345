@@ -1,16 +1,23 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Home, ShoppingBag, ShoppingCart, User } from 'lucide-react'
+import { Home, ShoppingBag, ShoppingCart, User, type LucideIcon } from 'lucide-react'
 
 interface MobileBottomNavProps {
   onOpenCart: () => void
   cartCount: number
 }
 
-const tabs = [
+interface Tab {
+  icon: LucideIcon
+  label: string
+  href?: string
+  action?: 'cart'
+}
+
+const tabs: Tab[] = [
   { icon: Home, label: 'Home', href: '/' },
   { icon: ShoppingBag, label: 'Products', href: '/products' },
-  { icon: ShoppingCart, label: 'Cart', action: 'cart' as const },
+  { icon: ShoppingCart, label: 'Cart', action: 'cart' },
   { icon: User, label: 'Account', href: '/login' },
 ]
 

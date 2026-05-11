@@ -1,27 +1,42 @@
-import { Order } from '../types';
+interface WhatsAppItem {
+  name: string;
+  qty: number;
+  subtotal: number;
+}
+
+interface WhatsAppOrder {
+  orderId: string;
+  name: string;
+  shopName: string;
+  phone: string;
+  email: string;
+  address: string;
+  notes: string;
+  items: WhatsAppItem[];
+  total: number;
+}
 
 const OWNER_WHATSAPP = 'TODO_91XXXXXXXXXX';
 
-export const sendWhatsAppNotification = (order: Order) => {
+export const sendWhatsAppNotification = (order: WhatsAppOrder) => {
   const message = encodeURIComponent(
 `🛒 *NEW PRE-BOOKING — KIRTI ELECTRONIC*
 
 📋 *Order ID:* ${order.orderId}
 👤 *Retailer:* ${order.name}
 🏪 *Shop:* ${order.shopName}
-🆔 *Retailer ID:* ${order.retailerId}
 📞 *Phone:* ${order.phone}
 📧 *Email:* ${order.email}
 
 📦 *Items Ordered:*
-${order.items.map(i => `• ${i.name} × ${i.quantity} = ₹${i.price * i.quantity}`).join('\n')}
+${order.items.map(i => `• ${i.name} × ${i.qty} = ₹${i.subtotal.toLocaleString('en-IN')}`).join('\n')}
 
 💰 *Total: ₹${order.total.toLocaleString('en-IN')}*
 
 🚚 *Ship To:*
-${order.shippingAddress}
+${order.address}
 
-📝 *Notes:* ${order.specialInstructions || 'None'}
+📝 *Notes:* ${order.notes || 'None'}
 🕐 *Time:* ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`
   );
 

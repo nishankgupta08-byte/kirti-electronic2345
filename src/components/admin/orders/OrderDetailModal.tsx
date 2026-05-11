@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Clock, MapPin, User, Package, Calculator, Phone, Mail, ShoppingBag } from 'lucide-react';
 import { Order } from '../../../types';
-import { formatFirebaseDateTime } from '../../../lib/dateUtils';
+import { formatDateTime } from '../../../lib/dateUtils';
 
 interface OrderDetailModalProps {
   isOpen: boolean;
@@ -54,7 +54,7 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ isOpen, order, onCl
                             }`}>
                                 {order.status}
                             </span>
-                            <span className="text-slate-500 text-xs font-medium">Placed {formatFirebaseDateTime(order.createdAt)}</span>
+                            <span className="text-slate-500 text-xs font-medium">Placed {formatDateTime(order.createdAt)}</span>
                         </div>
                     </div>
                     <div className="text-right">

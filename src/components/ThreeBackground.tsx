@@ -95,7 +95,6 @@ const CentralOrb = () => {
         color="#7C3AED"
         emissive="#4C1D95"
         emissiveIntensity={0.5}
-        shininess={120}
         transparent
         opacity={0.3}
       />

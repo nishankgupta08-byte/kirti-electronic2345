@@ -17,7 +17,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
   categories,
   onClose 
 }) => {
-  const { addProduct, updateProduct, uploadImage } = useAdminProducts();
+  const { addProduct, updateProduct } = useAdminProducts();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -95,7 +95,7 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
 
     try {
       if (product) {
-        await updateProduct(product.id, { ...formData, images: existingImages }, newImageFiles, removedImageURLs);
+        await updateProduct(product.id, formData, newImageFiles, existingImages, removedImageURLs);
       } else {
         await addProduct(formData, newImageFiles);
       }

@@ -1,89 +1,114 @@
-import { useState } from 'react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { CartItem, Order, OrderStatus } from '../types';
-import { submitOrderForm } from '../lib/formspree';
-import { sendWhatsAppNotification } from '../lib/whatsapp';
+import { useState } from 'react'
+import { supabase } from '../lib/supabase/client'
+import { CartItem } from '../types'
+import { submitOrderForm } from '../lib/formspree'
+import { sendWhatsAppNotification } from '../lib/whatsapp'
+import { toast } from 'react-hot-toast'
 
-export const useOrder = (items: CartItem[], total: number, clearCart: () => void) => {
-  const [status, setStatus] = useState<OrderStatus>('idle');
-  const [orderId, setOrderId] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState('');
+type OrderStatus = 'idle' | 'loading' | 'success' | 'error'
+
+const generateOrderId = () =>
+  `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`
+
+export const useOrder = (
+  items: CartItem[],
+  total: number,
+  clearCart: () => void
+) => {
+  const [status,   setStatus]   = useState<OrderStatus>('idle')
+  const [orderId,  setOrderId]  = useState<string | null>(null)
+  const [errorMsg, setErrorMsg] = useState('')
 
   const submitOrder = async (formData: {
-    name: string;
-    email: string;
-    phone: string;
-    shopName: string;
-    retailerId: string;
-    address: string;
-    notes: string;
+    name: string
+    email: string
+    phone: string
+    shopName: string
+    retailerId: string
+    address: string
+    notes: string
   }) => {
-    setStatus('loading');
-    setErrorMsg('');
+    setStatus('loading')
+    setErrorMsg('')
 
     try {
-      // Step 1 -- Generate order ID
-      const generatedOrderId = `ORD-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+      // 1) Generate order ID
+      const generatedOrderId = generateOrderId()
 
-      // Step 2 -- Build order object
-      const orderData: Order = {
-        orderId: generatedOrderId,
-        retailerId: formData.retailerId,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        shopName: formData.shopName,
-        shippingAddress: formData.address,
-        specialInstructions: formData.notes,
-        items: items,
-        total: total,
-        status: 'pending',
-        createdAt: serverTimestamp() as any // Firestore handles this
-      };
-
-      // Step 3 -- Save to Firestore (always first -- source of truth)
-      await addDoc(collection(db, 'orders'), orderData);
-
-      // Step 4 -- Submit to Formspree (replaces both EmailJS emails)
-      await submitOrderForm({
-        orderId: generatedOrderId,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        shopName: formData.shopName,
-        retailerId: formData.retailerId,
-        shippingAddress: formData.address,
-        specialInstructions: formData.notes,
-        items: items.map(item => ({
-          name: item.name,
-          qty: item.quantity,
-          unitPrice: item.price,
-          subtotal: item.quantity * item.price,
+      // 2) Build order
+      const orderRow = {
+        order_id:             generatedOrderId,
+        retailer_id:          formData.retailerId, // adjust if your table uses auth.uid() via RLS
+        name:                 formData.name,
+        email:                formData.email,
+        phone:                formData.phone,
+        shop_name:            formData.shopName,
+        shipping_address:     formData.address,
+        special_instructions:   formData.notes || '',
+        items:                items.map(item => ({
+          name:       item.name,
+          qty:        item.quantity,
+          unit_price: item.price,
+          subtotal:   item.quantity * item.price,
         })),
-        total: total,
-      });
+        total,
+        status: 'pending',
+      }
 
-      // Step 5 -- WhatsApp deep-link (unchanged)
-      sendWhatsAppNotification(orderData);
+      // 3) Save to Supabase
+      const { error: dbError } = await supabase
+        .from('orders')
+        .insert(orderRow)
 
-      // Step 6 -- Clear cart + set success
-      setOrderId(generatedOrderId);
-      setStatus('success');
-      clearCart();
+      if (dbError) throw new Error(dbError.message)
+
+      // 4) Submit to Formspree
+      await submitOrderForm({
+        orderId:             generatedOrderId,
+        name:                formData.name,
+        email:               formData.email,
+        phone:               formData.phone,
+        shopName:            formData.shopName,
+        retailerId:          formData.retailerId,
+        shippingAddress:     formData.address,
+        specialInstructions: formData.notes,
+        items:               items.map(item => ({
+          name:      item.name,
+          qty:       item.quantity,
+          unitPrice: item.price,
+          subtotal:  item.quantity * item.price,
+        })),
+        total,
+      })
+
+      // 5) WhatsApp deep-link
+      sendWhatsAppNotification({
+        orderId: generatedOrderId,
+        name:    formData.name,
+        shopName:formData.shopName,
+        phone:   formData.phone,
+        email:   formData.email,
+        address: formData.address,
+        notes:   formData.notes || '',
+        items:   items.map(c => ({ name: c.name, qty: c.quantity, subtotal: c.quantity * c.price })),
+        total,
+      })
+
+      clearCart()
+      setOrderId(generatedOrderId)
+      setStatus('success')
     } catch (err: any) {
-      console.error('Order submission error:', err);
-      setStatus('error');
-      setErrorMsg(err.message || 'Submission failed. Please try again.');
-      // Cart is NOT cleared on error
+      console.error('Order error:', err)
+      setStatus('error')
+      setErrorMsg(err.message || 'Submission failed. Please try again.')
     }
-  };
+  }
 
   const resetStatus = () => {
-    setStatus('idle');
-    setOrderId(null);
-    setErrorMsg('');
-  };
+    setStatus('idle')
+    setOrderId(null)
+    setErrorMsg('')
+  }
 
-  return { submitOrder, status, orderId, errorMsg, resetStatus };
-};
+  return { submitOrder, status, orderId, errorMsg, resetStatus }
+}

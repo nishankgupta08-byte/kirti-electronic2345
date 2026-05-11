@@ -13,7 +13,7 @@ import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 
 const AdminSidebar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const navItems = [
@@ -26,7 +26,7 @@ const AdminSidebar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await signOut();
       toast.success("Logged out from admin panel");
       navigate('/');
     } catch (error) {

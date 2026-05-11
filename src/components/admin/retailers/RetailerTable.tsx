@@ -46,7 +46,7 @@ const RetailerTable: React.FC<RetailerTableProps> = ({
               </tr>
             ) : (
               filteredRetailers.map((retailer) => (
-                <tr key={retailer.uid} className="hover:bg-sky-50/50 transition-colors group">
+                <tr key={retailer.id} className="hover:bg-sky-50/50 transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-white group-hover:border-sky-500/50 transition-all font-bold">
@@ -103,7 +103,7 @@ const RetailerTable: React.FC<RetailerTableProps> = ({
                     <div className="flex items-center justify-end gap-2">
                        {retailer.isApproved ? (
                          <button 
-                            onClick={() => onReject(retailer.uid)}
+                            onClick={() => onReject(retailer.id)}
                             className="p-2 text-slate-400 hover:text-amber-500 hover:bg-white rounded-xl transition-all"
                             title="Revoke Access"
                           >
@@ -111,7 +111,7 @@ const RetailerTable: React.FC<RetailerTableProps> = ({
                           </button>
                        ) : (
                           <button 
-                            onClick={() => onApprove(retailer.uid)}
+                            onClick={() => onApprove(retailer.id)}
                             className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-white rounded-xl transition-all"
                             title="Grant Access"
                           >
@@ -119,7 +119,7 @@ const RetailerTable: React.FC<RetailerTableProps> = ({
                           </button>
                        )}
                       <button 
-                         onClick={() => onDelete(retailer.uid)}
+                         onClick={() => onDelete(retailer.id)}
                          className="p-2 text-slate-400 hover:text-red-500 hover:bg-white rounded-xl transition-all"
                          title="Purge Node"
                       >

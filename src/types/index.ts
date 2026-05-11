@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore';
-
 export interface Product {
   id: string;
   name: string;
@@ -8,7 +6,6 @@ export interface Product {
   category: string;
   images: string[];
   specs?: Record<string, string>;
-  stock: number;
   stockAvailable: boolean;
   minOrderQty: number;
   createdAt: any;
@@ -29,7 +26,7 @@ export interface Category {
 }
 
 export interface Retailer {
-  uid: string;
+  id: string;
   name: string;
   email: string;
   phone: string;

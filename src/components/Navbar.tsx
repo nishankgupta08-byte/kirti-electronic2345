@@ -11,13 +11,13 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
-  const { user, retailerData, logout, isApproved } = useAuth();
+  const { user, retailerData, signOut: signOutFn, isApproved } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await signOutFn();
       toast.success("Logged out successfully");
       navigate('/');
     } catch (error) {
@@ -73,7 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
                   >
                     <div className="px-4 py-3 border-b border-zinc-100">
                       <p className="text-sm font-bold text-zinc-900 truncate">{user.displayName || 'Retail Member'}</p>
-                      <p className="text-[10px] text-zinc-500 truncate">{retailerData?.shopName || user.email}</p>
+                      <p className="text-[10px] text-zinc-500 truncate">{retailerData?.shop_name || user.email}</p>
                     </div>
                     <div className="py-2">
                       <button

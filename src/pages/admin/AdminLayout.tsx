@@ -2,11 +2,11 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminSidebar from '../../components/admin/AdminSidebar';
 import AdminTopbar from '../../components/admin/AdminTopbar';
-import { useAdminAuth } from '../../hooks/useAdminAuth';
+import { useAuth } from '../../context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
 const AdminLayout: React.FC = () => {
-  const { isAdmin, loading } = useAdminAuth();
+  const { isAdmin, loading } = useAuth();
 
   if (loading) {
     return (

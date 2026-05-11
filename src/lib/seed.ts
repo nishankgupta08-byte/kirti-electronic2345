@@ -1,5 +1,4 @@
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { supabase } from './supabase/client';
 
 const sampleProducts = [
   {
@@ -9,8 +8,9 @@ const sampleProducts = [
     category: 'Audio',
     images: ['https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800'],
     specs: { 'Driver': '40mm Beryllium', 'Battery': '40h', 'Weight': '280g' },
-    stock: 50,
-    createdAt: Date.now()
+    stock_available: true,
+    min_order_qty: 1,
+    created_at: new Date().toISOString(),
   },
   {
     name: 'X1 Carbon Laptop',
@@ -19,8 +19,9 @@ const sampleProducts = [
     category: 'Laptops',
     images: ['https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=800'],
     specs: { 'CPU': 'M3 Pro', 'RAM': '32GB', 'Storage': '1TB' },
-    stock: 20,
-    createdAt: Date.now() + 1000
+    stock_available: true,
+    min_order_qty: 1,
+    created_at: new Date().toISOString(),
   },
   {
     name: 'Ghost Smartphone',
@@ -29,8 +30,9 @@ const sampleProducts = [
     category: 'Smartphones',
     images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=800'],
     specs: { 'Display': 'E-ink 120Hz', 'Network': '5G', 'Material': 'Steel' },
-    stock: 15,
-    createdAt: Date.now() + 2000
+    stock_available: true,
+    min_order_qty: 1,
+    created_at: new Date().toISOString(),
   },
   {
     name: 'Studio Monitors',
@@ -39,15 +41,17 @@ const sampleProducts = [
     category: 'Audio',
     images: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=800'],
     specs: { 'Power': '200W', 'Range': '35Hz - 22kHz' },
-    stock: 10,
-    createdAt: Date.now() + 3000
+    stock_available: true,
+    min_order_qty: 1,
+    created_at: new Date().toISOString(),
   }
 ];
 
 export const seedDatabase = async () => {
-  const productsCol = collection(db, 'products');
-  for (const product of sampleProducts) {
-    await addDoc(productsCol, product);
+  const { error } = await supabase.from('products').insert(sampleProducts);
+  if (error) {
+    console.error('Seed error:', error.message);
+  } else {
+    console.log('Database seeded successfully');
   }
-  console.log('Database seeded successfully');
 };

@@ -1,73 +1,78 @@
-import { useState, useEffect } from 'react';
-import { 
-  collection, 
-  onSnapshot, 
-  query, 
-  orderBy, 
-  updateDoc, 
-  deleteDoc, 
-  doc,
-  setDoc,
-  serverTimestamp 
-} from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { Retailer } from '../types';
-import { toast } from 'react-hot-toast';
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase/client'
+import { Retailer } from '../types'
+import { toast } from 'react-hot-toast'
+
+const dbToRetailer = (db: any): Retailer => ({
+  id:           db.id,
+  name:         db.name,
+  email:        db.email,
+  phone:        db.phone,
+  shopName:     db.shop_name,
+  retailerId:   db.retailer_id,
+  isApproved:   db.is_approved ?? true,
+  loginMethod:  db.login_method === 'google' || db.login_method === 'email' ? db.login_method : 'email',
+  photoURL:     db.photo_url,
+  createdAt:    db.created_at,
+})
 
 export const useAdminRetailers = () => {
-  const [retailers, setRetailers] = useState<Retailer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [retailers, setRetailers] = useState<Retailer[]>([])
+  const [loading,   setLoading]   = useState(true)
+
+  const fetchRetailers = async () => {
+    const { data, error } = await supabase
+      .from('retailers')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) { toast.error('Failed to load retailers'); return }
+    setRetailers((data || []).map(dbToRetailer))
+    setLoading(false)
+  }
 
   useEffect(() => {
-    const q = query(collection(db, 'retailers'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ uid: doc.id, ...doc.data() } as Retailer));
-      setRetailers(items);
-      setLoading(false);
-    });
+    fetchRetailers()
 
-    return () => unsubscribe();
-  }, []);
+    const channel = supabase
+      .channel('retailers-admin-changes')
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'retailers'
+      }, fetchRetailers)
+      .subscribe()
 
-  const approveRetailer = async (uid: string) => {
-    try {
-      await updateDoc(doc(db, 'retailers', uid), { isApproved: true });
-      toast.success("Network access granted. Node cleared for operation.");
-    } catch (error) {
-      toast.error("Access clearance failed");
-    }
-  };
+    return () => { supabase.removeChannel(channel) }
+  }, [])
 
-  const rejectRetailer = async (uid: string) => {
-    try {
-      await updateDoc(doc(db, 'retailers', uid), { isApproved: false });
-      toast.success("Network access revoked. Node quarantined.");
-    } catch (error) {
-      toast.error("Revocation failure");
-    }
-  };
+  const approveRetailer = async (id: string) => {
+    const { error } = await supabase
+      .from('retailers')
+      .update({ is_approved: true })
+      .eq('id', id)
 
-  const deleteRetailer = async (uid: string) => {
-    try {
-      await deleteDoc(doc(db, 'retailers', uid));
-      toast.success("Entity purged from network map");
-    } catch (error) {
-      toast.error("Purge sequence failed");
-    }
-  };
+    if (error) { toast.error('Failed to approve retailer'); return }
+    toast.success('Retailer approved!')
+  }
 
-  const addRetailer = async (uid: string, data: Partial<Retailer>) => {
-    try {
-      await setDoc(doc(db, 'retailers', uid), {
-        ...data,
-        isApproved: true, // Admin created are auto-approved
-        createdAt: serverTimestamp()
-      });
-      toast.success("New network entity registered");
-    } catch (error) {
-      toast.error("Entity registration failed");
-    }
-  };
+  const rejectRetailer = async (id: string) => {
+    const { error } = await supabase
+      .from('retailers')
+      .update({ is_approved: false })
+      .eq('id', id)
 
-  return { retailers, loading, approveRetailer, rejectRetailer, deleteRetailer, addRetailer };
-};
+    if (error) { toast.error('Failed to reject retailer'); return }
+    toast.success('Retailer rejected.')
+  }
+
+  const deleteRetailer = async (id: string) => {
+    const { error } = await supabase
+      .from('retailers')
+      .delete()
+      .eq('id', id)
+
+    if (error) { toast.error('Failed to delete retailer'); return }
+    toast.success('Retailer removed.')
+  }
+
+  return { retailers, loading, approveRetailer, rejectRetailer, deleteRetailer }
+}

@@ -17,7 +17,7 @@ const MobileOrderForm: React.FC<MobileOrderFormProps> = ({ onSubmit, loading }) 
     name: user?.displayName || '',
     email: user?.email || '',
     phone: retailerData?.phone || '',
-    shopName: retailerData?.shopName || '',
+    shopName: retailerData?.shop_name || '',
     address: '',
     notes: '',
   })
@@ -31,7 +31,7 @@ const MobileOrderForm: React.FC<MobileOrderFormProps> = ({ onSubmit, loading }) 
     e.preventDefault()
     onSubmit({
       ...formData,
-      retailerId: retailerData?.retailerId || 'PENDING',
+      retailerId: retailerData?.retailer_id || 'PENDING',
     })
   }
 
@@ -110,7 +110,7 @@ const MobileOrderForm: React.FC<MobileOrderFormProps> = ({ onSubmit, loading }) 
             <Hash size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
-              value={retailerData?.retailerId || 'PENDING'}
+              value={retailerData?.retailer_id || 'PENDING'}
               readOnly
               className="w-full pl-10 pr-4 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl font-body text-sm text-zinc-700 outline-none cursor-not-allowed"
             />

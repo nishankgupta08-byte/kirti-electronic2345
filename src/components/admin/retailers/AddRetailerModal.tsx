@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, UserPlus, ShieldCheck, Mail, Lock, Phone, Store, Loader2, RefreshCw } from 'lucide-react';
 import firebaseConfig from '../../../../firebase-applet-config.json';
-import { useAdminRetailers } from '../../../hooks/useAdminRetailers';
+import { supabase } from '../../../lib/supabase/client';
 
 interface AddRetailerModalProps {
   isOpen: boolean;
@@ -10,7 +10,6 @@ interface AddRetailerModalProps {
 }
 
 const AddRetailerModal: React.FC<AddRetailerModalProps> = ({ isOpen, onClose }) => {
-  const { addRetailer } = useAdminRetailers();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
@@ -60,14 +59,17 @@ const AddRetailerModal: React.FC<AddRetailerModalProps> = ({ isOpen, onClose }) 
       const { localId: uid } = result;
 
       // 2. Create Retailer Doc
-      await addRetailer(uid, {
+      const { error: insertError } = await supabase.from('retailers').insert({
+        id: uid,
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        shopName: formData.shopName,
-        retailerId: `RTL-${Date.now()}`,
-        loginMethod: 'email'
+        shop_name: formData.shopName,
+        retailer_id: `RTL-${Date.now()}`,
+        login_method: 'email'
       });
+
+      if (insertError) throw new Error(insertError.message);
 
       onClose();
     } catch (error: any) {

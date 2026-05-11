@@ -1,69 +1,78 @@
-import { useState, useEffect } from 'react';
-import { 
-  collection, 
-  onSnapshot, 
-  query, 
-  orderBy, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc, 
-  serverTimestamp 
-} from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { Category } from '../types';
-import { toast } from 'react-hot-toast';
+import { useState, useEffect } from 'react'
+import { supabase } from '../lib/supabase/client'
+import { Category } from '../types'
+import { toast } from 'react-hot-toast'
+
+const dbToCategory = (db: any): Category => ({
+  id:        db.id,
+  name:      db.name,
+  icon:      db.icon,
+  slug:      db.slug,
+  createdAt: db.created_at,
+  updatedAt: db.updated_at,
+})
 
 export const useAdminCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading,    setLoading]    = useState(true)
+
+  const fetchCategories = async () => {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('created_at', { ascending: true })
+
+    if (error) { toast.error('Failed to load categories'); return }
+    setCategories((data || []).map(dbToCategory))
+    setLoading(false)
+  }
 
   useEffect(() => {
-    const q = query(collection(db, 'categories'), orderBy('createdAt', 'desc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map(doc => ({ 
-        id: doc.id, 
-        ...doc.data() 
-      } as any as Category));
-      setCategories(items);
-      setLoading(false);
-    });
+    fetchCategories()
 
-    return () => unsubscribe();
-  }, []);
+    const channel = supabase
+      .channel('categories-admin-changes')
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'categories'
+      }, fetchCategories)
+      .subscribe()
 
-  const addCategory = async (data: Partial<Category>) => {
-    try {
-      await addDoc(collection(db, 'categories'), {
-        ...data,
-        createdAt: serverTimestamp()
-      });
-      toast.success("Domain classification established");
-    } catch (error) {
-      toast.error("Failed to establish domain");
+    return () => { supabase.removeChannel(channel) }
+  }, [])
+
+  const addCategory = async (name: string, icon: string) => {
+    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    const { error } = await supabase
+      .from('categories')
+      .insert({ name, icon, slug })
+
+    if (error) {
+      toast.error(error.message.includes('unique') ? 'Category already exists.' : 'Failed to add category')
+      return
     }
-  };
+    toast.success('Category added!')
+  }
 
-  const updateCategory = async (id: string, data: Partial<Category>) => {
-    try {
-      await updateDoc(doc(db, 'categories', id), {
-        ...data,
-        updatedAt: serverTimestamp()
-      });
-      toast.success("Architecture updated");
-    } catch (error) {
-      toast.error("Architecture update failed");
-    }
-  };
+  const updateCategory = async (id: string, name: string, icon: string) => {
+    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    const { error } = await supabase
+      .from('categories')
+      .update({ name, icon, slug })
+      .eq('id', id)
+
+    if (error) { toast.error('Failed to update category'); return }
+    toast.success('Category updated!')
+  }
 
   const deleteCategory = async (id: string) => {
-    try {
-      await deleteDoc(doc(db, 'categories', id));
-      toast.success("Domain purged");
-    } catch (error) {
-      toast.error("Domain purge failed");
-    }
-  };
+    const { error } = await supabase
+      .from('categories')
+      .delete()
+      .eq('id', id)
 
-  return { categories, loading, addCategory, updateCategory, deleteCategory };
-};
+    if (error) { toast.error('Failed to delete category'); return }
+    toast.success('Category deleted.')
+  }
+
+  return { categories, loading, addCategory, updateCategory, deleteCategory }
+}

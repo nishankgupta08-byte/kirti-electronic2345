@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, Trash2, Search, Filter, Calendar, ChevronLeft, ChevronRight, Hash, Clock } from 'lucide-react';
 import { Order } from '../../../types';
-import { formatFirebaseDateTime } from '../../../lib/dateUtils';
+import { formatDateTime } from '../../../lib/dateUtils';
 
 interface OrdersTableProps {
   orders: Order[];
@@ -107,7 +107,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ orders, onView, onDelete, onU
                     </div>
                     <div className="flex items-center gap-1.5 mt-1 text-slate-400">
                         <Clock size={10} />
-                        <span className="text-[9px] font-mono font-bold tracking-tighter">{formatFirebaseDateTime(order.createdAt)}</span>
+                        <span className="text-[9px] font-mono font-bold tracking-tighter">{formatDateTime(order.createdAt)}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">

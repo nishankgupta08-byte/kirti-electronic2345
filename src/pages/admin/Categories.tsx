@@ -26,9 +26,9 @@ const AdminCategories: React.FC = () => {
 
   const handleSubmit = async (data: Partial<Category>) => {
     if (selectedCategory) {
-      await updateCategory(selectedCategory.id, data);
+      await updateCategory(selectedCategory.id, data.name || '', data.icon || '');
     } else {
-      await addCategory(data);
+      await addCategory(data.name || '', data.icon || '');
     }
   };
 

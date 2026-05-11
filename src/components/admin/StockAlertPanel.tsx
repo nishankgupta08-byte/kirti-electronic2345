@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { AlertTriangle, CheckCircle2, ChevronRight, PackageSearch } from 'lucide-react';
 import { Product } from '../../types';
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import GoogleLoginButton from '../components/auth/GoogleLoginButton';
-import EmailLoginForm from '../components/auth/EmailLoginForm';
-import AuthDivider from '../components/auth/AuthDivider';
+import AuthTabs from '../components/auth/AuthTabs';
 import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
@@ -23,15 +21,11 @@ const Login: React.FC = () => {
               </span>
             </Link>
             <p className="font-body text-sm text-zinc-400 mt-1">
-              Retailer Portal — Sign in to continue
+              Retailer Portal — Sign in or Create Account
             </p>
           </div>
 
-          <div className="space-y-5">
-            <GoogleLoginButton />
-            <AuthDivider />
-            <EmailLoginForm />
-          </div>
+          <AuthTabs redirect="/" />
 
           <p className="font-body text-xs text-zinc-400 text-center mt-8">
             Retailer access only. Contact admin at{' '}

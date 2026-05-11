@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
 import { useDeviceType } from './utils/useDeviceType';
@@ -12,6 +12,7 @@ import MobileCartDrawer from './components/mobile/MobileCartDrawer';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import Login from './pages/Login';
+import OAuthCallback from './pages/OAuthCallback';
 import Order from './pages/Order';
 import AdminLayout from './pages/admin/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
@@ -23,7 +24,38 @@ import PrivacyPolicy from './pages/policies/PrivacyPolicy';
 import TermsConditions from './pages/policies/TermsConditions';
 import MerchantPolicy from './pages/policies/MerchantPolicy';
 import { useCart } from './hooks/useCart';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { ReactNode } from 'react';
+
+// --- Auth Guards ---
+const ProtectedRoute: React.FC<{ children: ReactNode; adminOnly?: boolean }> = ({ children, adminOnly = false }) => {
+  const { user, isApproved, isAdmin, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-violet-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) return <Navigate to="/login" replace />;
+
+  if (adminOnly && !isAdmin) return <Navigate to="/" replace />;
+
+  if (!adminOnly && !isApproved) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="bg-white rounded-3xl border border-zinc-200 p-10 max-w-md text-center shadow-[0_20px_80px_rgba(0,0,0,0.08)]">
+          <h2 className="text-xl font-bold text-zinc-900 mb-2">Account Pending Approval</h2>
+          <p className="text-sm text-zinc-500">Your retailer account is awaiting admin approval. Contact wholesale@kirtielec.com for assistance.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+};
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
@@ -114,10 +146,18 @@ const AppContent: React.FC<any> = ({
             <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
             <Route path="/products" element={<Products onAddToCart={handleAddToCart} />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/order" element={<Order />} />
+            <Route path="/auth/callback" element={<OAuthCallback />} />
+            <Route path="/order" element={<ProtectedRoute><Order /></ProtectedRoute>} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-conditions" element={<TermsConditions />} />
             <Route path="/merchant-policy" element={<MerchantPolicy />} />
+            <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="categories" element={<AdminCategories />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="retailers" element={<AdminRetailers />} />
+            </Route>
           </Routes>
         </PageWrapper>
         <MobileCartDrawer
@@ -162,11 +202,12 @@ const AppContent: React.FC<any> = ({
           <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
           <Route path="/products" element={<Products onAddToCart={handleAddToCart} />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/order" element={<Order />} />
+          <Route path="/auth/callback" element={<OAuthCallback />} />
+          <Route path="/order" element={<ProtectedRoute><Order /></ProtectedRoute>} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-conditions" element={<TermsConditions />} />
           <Route path="/merchant-policy" element={<MerchantPolicy />} />
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin" element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="categories" element={<AdminCategories />} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Eye, Check, X, Clock, ExternalLink } from 'lucide-react';
 import { Order } from '../../types';
-import { formatFirebaseDate } from '../../lib/dateUtils';
+import { formatDateTime } from '../../lib/dateUtils';
 
 interface RecentOrdersTableProps {
   orders: Order[];
@@ -59,7 +59,7 @@ const RecentOrdersTable: React.FC<RecentOrdersTableProps> = ({ orders, onView, o
                     <tr key={order.id} className="hover:bg-sky-50/50 transition-colors group">
                         <td className="px-6 py-4">
                             <span className="text-[10px] font-mono font-bold text-slate-900 truncate block w-20">#{order.id?.slice(0, 8)}...</span>
-                            <span className="text-[9px] font-mono text-slate-400">{formatFirebaseDate(order.createdAt)}</span>
+                            <span className="text-[9px] font-mono text-slate-400">{formatDateTime(order.createdAt)}</span>
                         </td>
                         <td className="px-6 py-4">
                             <p className="text-xs font-bold text-slate-900">{order.retailerInfo.name}</p>

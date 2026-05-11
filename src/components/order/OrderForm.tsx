@@ -13,7 +13,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, loading }) => {
     name: user?.displayName || '',
     email: user?.email || '',
     phone: retailerData?.phone || '',
-    shopName: retailerData?.shopName || '',
+    shopName: retailerData?.shop_name || '',
     address: '',
     notes: ''
   });
@@ -40,7 +40,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, loading }) => {
     if (validate()) {
       onSubmit({
         ...formData,
-        retailerId: retailerData?.retailerId || 'PENDING'
+        retailerId: retailerData?.retailer_id || 'PENDING'
       });
     }
   };
@@ -118,7 +118,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ onSubmit, loading }) => {
         <div className="relative opacity-60">
           <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
           <input
-            value={retailerData?.retailerId || 'PENDING_INIT'}
+            value={retailerData?.retailer_id || 'PENDING_INIT'}
             disabled
             className="w-full bg-zinc-50 border border-zinc-100 rounded-xl py-4 pl-12 pr-4 text-zinc-700 outline-none font-mono text-sm cursor-not-allowed"
           />
