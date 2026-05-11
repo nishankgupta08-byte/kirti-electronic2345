@@ -5,11 +5,14 @@ import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
-  // Use root '/' for Vercel, '/kirti-electronic2345/' for GitHub Pages
-  const isVercel = process.env.VERCEL === '1';
+
   return {
-    base: isVercel ? '/' : '/kirti-electronic2345/',
+    base: '/',
     plugins: [react(), tailwindcss()],
+    build: {
+      outDir: 'dist',
+      emptyOutDir: true,
+    },
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
