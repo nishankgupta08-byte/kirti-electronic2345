@@ -11,7 +11,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 export const supabase = createClient(
-  supabaseUrl || 'http://placeholder-url',
+  supabaseUrl || 'https://placeholder-url',
   supabaseAnonKey || 'placeholder-key',
   {
     auth: {
@@ -19,6 +19,11 @@ export const supabase = createClient(
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: true,
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10,
+      },
     },
   }
 )
