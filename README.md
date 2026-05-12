@@ -8,21 +8,22 @@ Kirti Electronic is a modern, high-performance web application built for electro
 - **Retailer Portal:** Secure login portal for wholesale retailers with admin approval workflows.
 - **E-Commerce Flow:** Product browsing, dynamic cart drawer, and seamless ordering system.
 - **Admin Dashboard:** Full-featured secure admin panel to manage products, categories, orders, and approve retailer accounts.
-- **Secure Authentication:** Integrated with Firebase Auth (Google & Email/Password) and strict Firestore security rules.
+- **Secure Authentication:** Integrated with Supabase Auth (Google & Email/Password) and Row Level Security.
 
 ## 🛠️ Technology Stack
 
 - **Frontend:** React 19, TypeScript, Vite
-- **Styling:** Tailwind CSS, Framer Motion
+- **Styling:** Tailwind CSS, Motion (Framer Motion)
 - **3D Graphics:** Three.js, React Three Fiber, Drei
-- **Backend/Database:** Firebase (Auth, Firestore, Storage)
+- **Backend/Database:** Supabase (Auth, Database, Row Level Security)
+- **Forms/Email:** Formspree
 - **Routing:** React Router DOM
 
 ## 💻 Running Locally
 
 ### Prerequisites
 - Node.js (v18 or higher recommended)
-- Firebase Account (for database setup)
+- Supabase Account (for database setup)
 
 ### Setup Instructions
 
@@ -37,7 +38,11 @@ Kirti Electronic is a modern, high-performance web application built for electro
    ```
 
 3. **Environment Setup:**
-   Ensure you have a `.env.local` file in the root directory (copy from `.env.example`) and configure your Firebase settings in `firebase-applet-config.json` if necessary.
+   Create a `.env` file in the root directory with:
+   ```
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
 4. **Start the development server:**
    ```bash
@@ -49,13 +54,12 @@ Kirti Electronic is a modern, high-performance web application built for electro
 
 ## 🔒 Admin Panel Access
 
-The Admin Panel is strictly protected by Firebase rules. To gain access in development:
+The Admin Panel is protected by Supabase Row Level Security (RLS). To gain access in development:
 
 1. Go to `http://localhost:5173/login` and sign in.
-2. Go to your [Firebase Console](https://console.firebase.google.com/) > **Authentication** and copy your User UID.
-3. Open **Firestore Database**.
-4. Create a collection named `admins` and create a new document using your **User UID** as the Document ID.
-5. You can now access the admin panel via `http://localhost:5173/admin`.
+2. In your [Supabase Dashboard](https://supabase.com/dashboard), go to your project > **Table Editor** > `admins` table.
+3. Click **Insert row** and add your **User ID** (UUID from `auth.users` table) to the `user_id` column.
+4. You can now access the admin panel via `http://localhost:5173/admin`.
 
 ## 📜 Scripts
 
@@ -65,4 +69,4 @@ The Admin Panel is strictly protected by Firebase rules. To gain access in devel
 - `npm run lint`: Runs TypeScript type checking.
 
 ---
-*Built with React, Vite, and Firebase.*
+*Built with React, Vite, and Supabase.*

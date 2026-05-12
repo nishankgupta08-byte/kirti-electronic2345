@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Menu, Search, Package, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, Search, Package, LogOut, Shield } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -11,7 +11,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
-  const { user, retailerData, signOut: signOutFn, isApproved } = useAuth();
+  const { user, retailerData, isAdmin, signOut: signOutFn, isApproved } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -47,35 +47,46 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
         </button>
 
         {user ? (
-          <div className="relative">
-            <button
-              onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="w-10 h-10 rounded-xl overflow-hidden border border-zinc-200 hover:border-violet-300 transition-all active:scale-95"
-            >
-              {user.photoURL ? (
-                <img src={user.photoURL} alt={user.displayName || ''} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full bg-violet-600 flex items-center justify-center text-white font-bold text-sm">
-                  {user.displayName?.charAt(0) || user.email?.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </button>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="flex items-center gap-2 text-sm font-semibold bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl transition-all duration-200 hover:shadow-[0_4px_16px_rgba(124,58,237,0.35)] active:scale-95"
+                title="Admin Panel"
+              >
+                <Shield size={16} />
+                <span className="hidden sm:inline">Admin Panel</span>
+              </button>
+            )}
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="w-10 h-10 rounded-xl overflow-hidden border border-zinc-200 hover:border-violet-300 transition-all active:scale-95"
+              >
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt={user.displayName || ''} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-violet-600 flex items-center justify-center text-white font-bold text-sm">
+                    {user.displayName?.charAt(0) || user.email?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </button>
 
-            <AnimatePresence>
-              {isProfileOpen && (
-                <>
-                  <div className="fixed inset-0" onClick={() => setIsProfileOpen(false)} />
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-4 w-64 bg-white border border-zinc-100 rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.08)] overflow-hidden py-2"
-                  >
-                    <div className="px-4 py-3 border-b border-zinc-100">
-                      <p className="text-sm font-bold text-zinc-900 truncate">{user.displayName || 'Retail Member'}</p>
-                      <p className="text-[10px] text-zinc-500 truncate">{retailerData?.shop_name || user.email}</p>
-                    </div>
-                    <div className="py-2">
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <>
+                    <div className="fixed inset-0" onClick={() => setIsProfileOpen(false)} />
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute right-0 mt-4 w-64 bg-white border border-zinc-100 rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.08)] overflow-hidden py-2"
+                    >
+                      <div className="px-4 py-3 border-b border-zinc-100">
+                        <p className="text-sm font-bold text-zinc-900 truncate">{user.displayName || 'Retail Member'}</p>
+                        <p className="text-[10px] text-zinc-500 truncate">{retailerData?.shop_name || user.email}</p>
+                      </div>
+                      <div className="py-2">
                       <button
                         onClick={() => { navigate('/order'); setIsProfileOpen(false); }}
                         className="w-full px-4 py-2 text-left text-xs font-medium text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 flex items-center gap-3 transition-colors"
@@ -83,20 +94,30 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
                         <Package size={16} />
                         Booking History
                       </button>
-                    </div>
-                    <div className="pt-2 border-t border-zinc-100">
-                      <button
-                        onClick={handleLogout}
-                        className="w-full px-4 py-3 text-left text-xs font-bold text-rose-500 hover:bg-rose-50 flex items-center gap-3 transition-colors"
-                      >
-                        <LogOut size={16} />
-                        Sign Out Portal
-                      </button>
-                    </div>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
+                      {isAdmin && (
+                        <button
+                          onClick={() => { navigate('/admin'); setIsProfileOpen(false); }}
+                          className="w-full px-4 py-2 text-left text-xs font-medium text-violet-600 hover:text-violet-800 hover:bg-violet-50 flex items-center gap-3 transition-colors"
+                        >
+                          <Shield size={16} />
+                          Admin Panel
+                        </button>
+                      )}
+                      </div>
+                      <div className="pt-2 border-t border-zinc-100">
+                        <button
+                          onClick={handleLogout}
+                          className="w-full px-4 py-3 text-left text-xs font-bold text-rose-500 hover:bg-rose-50 flex items-center gap-3 transition-colors"
+                        >
+                          <LogOut size={16} />
+                          Sign Out Portal
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         ) : (
           <Link to="/login" className="text-sm font-semibold bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl transition-all duration-200 hover:shadow-[0_4px_16px_rgba(124,58,237,0.35)] active:scale-95">
