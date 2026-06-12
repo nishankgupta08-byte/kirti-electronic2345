@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ProductCard from './ProductCard';
+import ProductDetailModal from './ProductDetailModal';
 import { Product } from '../types';
 
 interface ProductGridProps {
@@ -9,6 +10,8 @@ interface ProductGridProps {
 }
 
 const ProductGrid: React.FC<ProductGridProps> = ({ products, onAddToCart, loading }) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -25,15 +28,25 @@ const ProductGrid: React.FC<ProductGridProps> = ({ products, onAddToCart, loadin
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
-      {products.map((product) => (
-        <ProductCard 
-          key={product.id} 
-          product={product} 
-          onAddToCart={onAddToCart} 
-        />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddToCart={onAddToCart}
+            onSelect={setSelectedProduct}
+          />
+        ))}
+      </div>
+
+      <ProductDetailModal
+        product={selectedProduct}
+        isOpen={selectedProduct !== null}
+        onClose={() => setSelectedProduct(null)}
+        onAddToCart={onAddToCart}
+      />
+    </>
   );
 };
 

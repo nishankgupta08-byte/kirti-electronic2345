@@ -15,12 +15,12 @@ const Products: React.FC<ProductsProps> = ({ onAddToCart }) => {
 
   return (
     <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
-      <div className="mb-12 border-b border-zinc-100 pb-12">
-        <span className="text-violet-600 font-mono text-[10px] font-bold tracking-[0.4em] uppercase mb-2 block">Warehouse Inventory</span>
-        <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-zinc-900">Full Collection</h1>
-        <p className="text-zinc-500 max-w-lg mb-8 font-medium">
-          Verified retailers can pre-book from our real-time inventory.
-          Bulk discounts apply automatically at checkout for established partners.
+      <div className="mb-12 border-b border-kirti-border pb-12">
+        <span className="text-kirti-orange font-mono text-[10px] font-bold tracking-[0.4em] uppercase mb-2 block">// WAREHOUSE INVENTORY</span>
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-kirti-cobalt">ALL ACTIVE CATALOG</h1>
+        <p className="text-kirti-body text-sm max-w-lg mb-8 font-medium">
+          Verified merchant nodes can secure priority allocation from our real-time stock matrix. 
+          Bulk discounts apply dynamically on confirmation.
         </p>
         <CategoryFilter current={category} onChange={setCategory} />
       </div>

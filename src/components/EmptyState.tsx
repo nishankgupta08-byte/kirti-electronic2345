@@ -1,18 +1,17 @@
 import React from 'react';
 import { PackageOpen } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const EmptyState: React.FC = () => {
   return (
-    <div className="flex flex-col items-center justify-center py-20 px-8 text-center border-2 border-dashed border-zinc-200 rounded-2xl bg-zinc-50/50">
-      <div className="w-16 h-16 rounded-2xl bg-violet-50 border border-violet-100 flex items-center justify-center mb-5">
-        <PackageOpen size={28} className="text-violet-400" />
+    <div className="flex flex-col items-center justify-center py-20 px-8 text-center border border-dashed border-kirti-border rounded-sm bg-kirti-surface">
+      <div className="w-14 h-14 rounded-sm bg-kirti-orange-light border border-kirti-orange/20 flex items-center justify-center mb-5">
+        <PackageOpen size={24} className="text-kirti-orange" />
       </div>
-      <h3 className="font-heading font-semibold text-zinc-900 mb-2">
-        No Products Yet
+      <h3 className="font-heading font-bold text-kirti-cobalt text-sm mb-2">
+        NO STOCKS REGISTERED
       </h3>
-      <p className="font-body text-sm text-zinc-400 max-w-xs leading-relaxed">
-        The admin is setting up the product catalog. Check back soon!
+      <p className="font-sans text-xs text-kirti-muted max-w-xs leading-relaxed font-semibold">
+        The catalog registry is empty. The gateway admin has not uploaded any product nodes yet. Check back soon.
       </p>
     </div>
   );

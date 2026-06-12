@@ -34,24 +34,23 @@ const Order: React.FC = () => {
 
   if (status === 'success' && orderId) {
     return (
-      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto min-h-screen flex items-center justify-center bg-white">
+      <div className="pt-32 pb-20 px-6 max-w-4xl mx-auto min-h-screen flex items-center justify-center">
         <OrderSuccess orderId={orderId} email={user?.email || ''} />
       </div>
     );
   }
 
   return (
-    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen bg-white">
+    <div className="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-screen">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-12"
+        className="mb-12 border-b border-kirti-border pb-8"
       >
-        <span className="text-violet-600 font-mono text-[10px] font-bold tracking-[0.4em] uppercase mb-2 block">Merchant Secure Checkout</span>
-        <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight text-zinc-900 leading-none">Pre-Booking Dispatch</h1>
-        <p className="text-zinc-500 max-w-lg font-medium">
-          Finalize your bulk allocation request. Our dispatch team will verify dealer
-          credentials before confirming warehouse release.
+        <span className="text-kirti-orange font-mono text-[10px] font-bold tracking-[0.4em] uppercase mb-2 block">// MERCHANT SECURE CHECKOUT</span>
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-kirti-cobalt leading-none">PRE-BOOKING DISPATCH</h1>
+        <p className="text-kirti-body text-sm max-w-lg font-medium">
+          Finalize your bulk inventory allocation request. Our routing team will verify merchant credentials before releasing stock items from our warehouse nodes.
         </p>
       </motion.div>
 

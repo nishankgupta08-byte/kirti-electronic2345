@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase/client'
+import { filterDemoProducts } from '../data/demoProducts'
 import { Product } from '../types'
 
 // ── Helpers ──────────────────────────────────────────────
@@ -7,12 +8,16 @@ const dbToProduct = (db: any): Product => ({
   id:            db.id,
   name:          db.name,
   description:   db.description || '',
+  overview:      db.overview,
   price:         db.price,
   category:      db.category,
   images:        db.images || [],
   specs:         db.specs,
   stockAvailable: db.stock_available ?? true,
   minOrderQty:   db.min_order_qty ?? 1,
+  rating:        db.rating,
+  reviewCount:   db.review_count,
+  reviews:       db.reviews,
   createdAt:     db.created_at,
   updatedAt:     db.updated_at,
 })
@@ -40,12 +45,13 @@ export const useProducts = (category: string = 'All') => {
       if (cancelled) return
 
       if (error) {
-        setError(error.message)
+        setProducts(filterDemoProducts(category))
         setLoading(false)
         return
       }
 
-      setProducts((data || []).map(dbToProduct))
+      const fetched = (data || []).map(dbToProduct)
+      setProducts(fetched.length > 0 ? fetched : filterDemoProducts(category))
       setLoading(false)
     }
 

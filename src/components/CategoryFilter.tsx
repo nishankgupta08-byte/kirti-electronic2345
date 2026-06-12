@@ -1,5 +1,5 @@
 import React from 'react';
-import { Type, SlidersHorizontal, Laptop, Headphones, Cable, Smartphone } from 'lucide-react';
+import { SlidersHorizontal, Laptop, Headphones, Cable, Smartphone } from 'lucide-react';
 
 interface CategoryFilterProps {
   current: string;
@@ -13,11 +13,11 @@ interface CategoryItem {
 }
 
 const categories: CategoryItem[] = [
-  { name: 'All', slug: 'All', icon: <SlidersHorizontal size={14} /> },
-  { name: 'Laptops', slug: 'Laptops', icon: <Laptop size={14} /> },
-  { name: 'Smartphones', slug: 'Smartphones', icon: <Smartphone size={14} /> },
-  { name: 'Audio', slug: 'Audio', icon: <Headphones size={14} /> },
-  { name: 'Accessories', slug: 'Accessories', icon: <Cable size={14} /> },
+  { name: 'All', slug: 'All', icon: <SlidersHorizontal size={12} /> },
+  { name: 'Laptops', slug: 'Laptops', icon: <Laptop size={12} /> },
+  { name: 'Smartphones', slug: 'Smartphones', icon: <Smartphone size={12} /> },
+  { name: 'Audio', slug: 'Audio', icon: <Headphones size={12} /> },
+  { name: 'Accessories', slug: 'Accessories', icon: <Cable size={12} /> },
 ];
 
 const CategoryFilter: React.FC<CategoryFilterProps> = ({ current, onChange }) => {
@@ -27,10 +27,10 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ current, onChange }) =>
         <button
           key={cat.slug}
           onClick={() => onChange(cat.slug)}
-          className={`shrink-0 font-body text-xs font-semibold px-4 py-2 rounded-full border transition-all duration-200 flex items-center gap-1.5 ${
+          className={`shrink-0 font-mono text-[11px] font-bold uppercase tracking-wider px-4 py-2.5 rounded-sm border transition-all duration-200 flex items-center gap-2 ${
             current === cat.slug
-              ? 'bg-violet-600 text-white border-violet-600 shadow-[0_2px_12px_rgba(124,58,237,0.3)]'
-              : 'bg-white text-zinc-600 border-zinc-200 hover:border-violet-300 hover:text-violet-600'
+              ? 'bg-kirti-orange text-white border-kirti-orange'
+              : 'bg-white text-kirti-muted border-kirti-border hover:border-kirti-orange hover:text-kirti-orange'
           }`}
         >
           {cat.icon}

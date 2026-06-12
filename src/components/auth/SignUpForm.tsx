@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase/client';
-import { User, Mail, Lock, Eye, EyeOff, Phone, Store, MapPin, Loader2, Hash } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, Phone, Store, MapPin, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import GoogleAuthButton from './GoogleAuthButton';
 import AuthDivider from './AuthDivider';
@@ -73,63 +73,68 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ redirect, onSwitchToLogin }) =>
   };
 
   const fields = [
-    { k: 'name' as const, l: 'Full Name', t: 'text', i: User, p: 'Your full name' },
-    { k: 'email' as const, l: 'Email Address', t: 'email', i: Mail, p: 'you@example.com' },
-    { k: 'phone' as const, l: 'Phone Number', t: 'tel', i: Phone, p: '9876543210' },
-    { k: 'shop_name' as const, l: 'Shop / Company', t: 'text', i: Store, p: 'Your business name' },
-    { k: 'city' as const, l: 'City', t: 'text', i: MapPin, p: 'Mumbai, Delhi...' },
+    { k: 'name' as const, l: 'Full Name', t: 'text', i: User, p: 'Full Name' },
+    { k: 'email' as const, l: 'Email Address', t: 'email', i: Mail, p: 'you@domain.com' },
+    { k: 'phone' as const, l: 'Phone Number', t: 'tel', i: Phone, p: 'Mobile number' },
+    { k: 'shop_name' as const, l: 'Shop / Company', t: 'text', i: Store, p: 'Business Name' },
+    { k: 'city' as const, l: 'City', t: 'text', i: MapPin, p: 'City Location' },
   ];
 
   return (
     <div className="space-y-3">
       <GoogleAuthButton redirect={redirect} mode="signup" />
       <AuthDivider text="or sign up with email" />
+      
       {fields.map(({ k, l, t, i: Icon, p }) => (
         <div key={k}>
-          <label className="font-body text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-1.5 block">{l} *</label>
+          <label className="font-mono text-[10px] font-bold text-kirti-muted uppercase tracking-wider mb-1 block">// {l} *</label>
           <div className="relative">
-            <Icon size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+            <Icon size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-kirti-muted" />
             <input type={t} value={form[k]} onChange={setField(k)} placeholder={p}
-              className={`w-full pl-10 pr-4 py-3 bg-zinc-50 border rounded-xl font-body text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-violet-100 ${errors[k] ? 'border-rose-400' : 'border-zinc-200 focus:border-violet-500'}`}
+              className={`w-full pl-9 pr-4 py-2.5 bg-kirti-surface border rounded-sm font-sans text-xs text-kirti-cobalt placeholder:text-kirti-muted outline-none transition-all duration-200 focus:border-kirti-orange focus:ring-1 focus:ring-kirti-orange/20 ${errors[k] ? 'border-kirti-rose' : 'border-kirti-border'}`}
             />
           </div>
-          {errors[k] && <p className="font-body text-xs text-rose-500 mt-1 ml-1">{errors[k]}</p>}
+          {errors[k] && <p className="font-mono text-[10px] text-kirti-rose mt-1 ml-1">{errors[k]}</p>}
         </div>
       ))}
+
       <div>
-        <label className="font-body text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-1.5 block">Password *</label>
+        <label className="font-mono text-[10px] font-bold text-kirti-muted uppercase tracking-wider mb-1 block">// Password *</label>
         <div className="relative">
-          <Lock size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-kirti-muted" />
           <input type={showPass ? 'text' : 'password'} value={form.password} onChange={setField('password')} placeholder="Min 8 chars, 1 uppercase"
-            className={`w-full pl-10 pr-12 py-3 bg-zinc-50 border rounded-xl font-body text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-violet-100 ${errors.password ? 'border-rose-400' : 'border-zinc-200 focus:border-violet-500'}`}
+            className={`w-full pl-9 pr-12 py-2.5 bg-kirti-surface border rounded-sm font-sans text-xs text-kirti-cobalt placeholder:text-kirti-muted outline-none transition-all duration-200 focus:border-kirti-orange focus:ring-1 focus:ring-kirti-orange/20 ${errors.password ? 'border-kirti-rose' : 'border-kirti-border'}`}
           />
-          <button onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600">{showPass ? <EyeOff size={15} /> : <Eye size={15} />}</button>
+          <button onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-kirti-muted hover:text-kirti-cobalt">{showPass ? <EyeOff size={14} /> : <Eye size={14} />}</button>
         </div>
         <div className="flex gap-1 mt-2">
-          {[1,2,3,4].map(i => <div key={i} className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-            form.password.length === 0 ? 'bg-zinc-200' : form.password.length < 6 ? (i <= 1 ? 'bg-rose-400' : 'bg-zinc-200') : form.password.length < 8 ? (i <= 2 ? 'bg-amber-400' : 'bg-zinc-200') : !/[A-Z]/.test(form.password) ? (i <= 3 ? 'bg-amber-400' : 'bg-zinc-200') : 'bg-emerald-500'
+          {[1,2,3,4].map(i => <div key={i} className={`h-1 flex-1 rounded-sm transition-all duration-300 ${
+            form.password.length === 0 ? 'bg-kirti-border' : form.password.length < 6 ? (i <= 1 ? 'bg-kirti-rose' : 'bg-kirti-border') : form.password.length < 8 ? (i <= 2 ? 'bg-kirti-amber' : 'bg-kirti-border') : !/[A-Z]/.test(form.password) ? (i <= 3 ? 'bg-kirti-amber' : 'bg-kirti-border') : 'bg-kirti-emerald'
           }`} />)} </div>
-        {errors.password && <p className="font-body text-xs text-rose-500 mt-1 ml-1">{errors.password}</p>}
+        {errors.password && <p className="font-mono text-[10px] text-kirti-rose mt-1 ml-1">{errors.password}</p>}
       </div>
+
       <div>
-        <label className="font-body text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-1.5 block">Confirm Password *</label>
+        <label className="font-mono text-[10px] font-bold text-kirti-muted uppercase tracking-wider mb-1 block">// Confirm Password *</label>
         <div className="relative">
-          <Lock size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-kirti-muted" />
           <input type={showConfirm ? 'text' : 'password'} value={form.confirm} onChange={setField('confirm')} placeholder="Re-enter password"
-            className={`w-full pl-10 pr-12 py-3 bg-zinc-50 border rounded-xl font-body text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-violet-100 ${errors.confirm ? 'border-rose-400' : 'border-zinc-200 focus:border-violet-500'}`}
+            className={`w-full pl-9 pr-12 py-2.5 bg-kirti-surface border rounded-sm font-sans text-xs text-kirti-cobalt placeholder:text-kirti-muted outline-none transition-all duration-200 focus:border-kirti-orange focus:ring-1 focus:ring-kirti-orange/20 ${errors.confirm ? 'border-kirti-rose' : 'border-kirti-border'}`}
           />
-          <button onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600">{showConfirm ? <EyeOff size={15} /> : <Eye size={15} />}</button>
+          <button onClick={() => setShowConfirm(!showConfirm)} className="absolute right-4 top-1/2 -translate-y-1/2 text-kirti-muted hover:text-kirti-cobalt">{showConfirm ? <EyeOff size={14} /> : <Eye size={14} />}</button>
         </div>
-        {form.confirm.length > 0 && <p className={`font-body text-xs mt-1 ml-1 ${form.password === form.confirm ? 'text-emerald-500' : 'text-rose-500'}`}>{form.password === form.confirm ? '✓ Passwords match' : '✗ Passwords do not match'}</p>}
-        {errors.confirm && <p className="font-body text-xs text-rose-500 mt-1 ml-1">{errors.confirm}</p>}
+        {form.confirm.length > 0 && <p className={`font-mono text-[10px] mt-1 ml-1 ${form.password === form.confirm ? 'text-kirti-emerald' : 'text-kirti-rose'}`}>{form.password === form.confirm ? '✓ Passwords match' : '✗ Passwords do not match'}</p>}
+        {errors.confirm && <p className="font-mono text-[10px] text-kirti-rose mt-1 ml-1">{errors.confirm}</p>}
       </div>
+
       <button onClick={handleSignUp} disabled={loading}
-        className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-body font-semibold text-sm py-3.5 rounded-xl mt-2 transition-all duration-200 hover:shadow-[0_8px_30px_rgba(124,58,237,0.4)] active:scale-95 flex items-center justify-center gap-2"
+        className="w-full bg-kirti-orange hover:bg-kirti-orange-hover disabled:bg-kirti-muted/20 disabled:text-kirti-muted disabled:cursor-not-allowed text-white font-mono text-xs font-bold tracking-wider uppercase py-3 mt-4 shadow-[2px_2px_0px_rgba(15,29,54,1)] active:translate-y-[1px] transition-all flex items-center justify-center gap-2"
       >
-        {loading ? <><Loader2 size={16} className="animate-spin" /> Creating Account...</> : 'Create Account →'}
+        {loading ? <><Loader2 size={14} className="animate-spin" /> CREATING NODE...</> : 'Initialize Account →'}
       </button>
-      <p className="font-body text-xs text-zinc-400 text-center pt-1">
-        Already have an account? <button onClick={onSwitchToLogin} className="text-violet-600 font-semibold hover:text-violet-700">Sign in</button>
+
+      <p className="font-mono text-[10px] text-kirti-muted text-center pt-2">
+        Already registered? <button onClick={onSwitchToLogin} className="text-kirti-orange font-bold hover:text-kirti-orange-hover">[Sign in]</button>
       </p>
     </div>
   );

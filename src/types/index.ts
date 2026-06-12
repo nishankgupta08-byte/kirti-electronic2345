@@ -1,13 +1,25 @@
+export interface ProductReview {
+  id: string;
+  author: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
 export interface Product {
   id: string;
   name: string;
   description: string;
+  overview?: string;
   price: number;
   category: string;
   images: string[];
   specs?: Record<string, string>;
   stockAvailable: boolean;
   minOrderQty: number;
+  rating?: number;
+  reviewCount?: number;
+  reviews?: ProductReview[];
   createdAt: any;
   updatedAt?: any;
 }

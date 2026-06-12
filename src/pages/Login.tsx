@@ -5,32 +5,39 @@ import { Link } from 'react-router-dom';
 
 const Login: React.FC = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 relative">
       <motion.div
-        initial={{ opacity: 0, y: 32, scale: 0.96 }}
+        initial={{ opacity: 0, y: 15, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
-        <div className="bg-white rounded-3xl border border-zinc-200 shadow-[0_20px_80px_rgba(0,0,0,0.08)] p-10">
-          <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2 mb-6 group">
-              <span className="font-heading font-extrabold text-2xl">
-                <span className="gradient-text">KIRTI</span>
-                <span className="text-zinc-900"> ELECTRONIC</span>
-              </span>
-            </Link>
-            <p className="font-body text-sm text-zinc-400 mt-1">
-              Retailer Portal — Sign in or Create Account
+        <div className="bg-white border-2 border-kirti-cobalt rounded-xl p-1 shadow-[4px_4px_0px_rgba(15,29,54,1)]">
+          <div className="border border-kirti-border rounded-lg p-8 md:p-10 relative bg-white overflow-hidden">
+            
+            {/* Corner labels */}
+            <div className="absolute top-2 left-2 font-mono text-[8px] text-kirti-muted select-none">[AUTH_MODE]</div>
+            <div className="absolute top-2 right-2 font-mono text-[8px] text-kirti-muted select-none">[SYS::LOCK]</div>
+
+            <div className="text-center mb-8 pt-2">
+              <Link to="/" className="inline-flex items-center gap-2 mb-4">
+                <span className="font-heading font-bold text-2xl">
+                  <span className="text-kirti-orange">KIRTI</span>
+                  <span className="text-kirti-cobalt"> ELECTRONIC</span>
+                </span>
+              </Link>
+              <div className="font-mono text-[10px] text-kirti-muted tracking-wider uppercase mt-1">
+                // Merchant Authentication Portal
+              </div>
+            </div>
+
+            <AuthTabs redirect="/" />
+
+            <p className="font-mono text-[10px] text-kirti-muted text-center mt-8 pt-4 border-t border-kirti-border/60">
+              Retailer nodes only. Request clearance from{' '}
+              <span className="text-kirti-orange font-bold font-sans">wholesale@kirtielec.com</span> to activate access.
             </p>
           </div>
-
-          <AuthTabs redirect="/" />
-
-          <p className="font-body text-xs text-zinc-400 text-center mt-8">
-            Retailer access only. Contact admin at{' '}
-            <span className="text-violet-600">wholesale@kirtielec.com</span> to get your shop approved.
-          </p>
         </div>
       </motion.div>
     </div>

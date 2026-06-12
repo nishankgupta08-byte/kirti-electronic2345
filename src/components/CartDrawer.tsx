@@ -57,68 +57,68 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-zinc-900/20 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-kirti-cobalt/20 backdrop-blur-sm z-50"
           />
           <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 h-full w-full max-w-md bg-white border-l border-zinc-100 z-50 shadow-[-20px_0_60px_rgba(0,0,0,0.08)] flex flex-col"
+            className="fixed right-0 top-0 h-full w-full max-w-md bg-white border-l border-kirti-border z-50 shadow-lg flex flex-col font-sans"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-100">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-kirti-border">
               <div>
-                <h2 className="font-heading font-bold text-zinc-900">Your Cart</h2>
-                <p className="font-body text-xs text-zinc-400 mt-0.5">{items.length} items</p>
+                <h2 className="font-heading font-bold text-kirti-cobalt text-lg">Allocation Basket</h2>
+                <p className="font-mono text-[10px] text-kirti-muted mt-0.5">// QTY::{items.length} ACTIVE BATCHES</p>
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-xl bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center transition-colors duration-150"
-              ><X size={16} className="text-zinc-600" /></button>
+                className="w-8 h-8 rounded-sm bg-kirti-surface hover:bg-kirti-border flex items-center justify-center transition-colors duration-150 border border-kirti-border"
+              ><X size={14} className="text-kirti-cobalt" /></button>
             </div>
 
             {/* Items */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center mb-4">
-                    <span className="text-2xl opacity-30">🛒</span>
+                  <div className="w-16 h-16 rounded border border-kirti-border bg-kirti-surface flex items-center justify-center mb-4">
+                    <span className="font-mono text-[10px] font-bold text-kirti-muted">EMPTY</span>
                   </div>
-                  <p className="font-body text-sm text-zinc-400">Your cart is empty</p>
+                  <p className="font-mono text-[11px] text-kirti-muted uppercase tracking-wider">No batches selected</p>
                 </div>
               ) : (
                 items.map((item) => (
-                  <div key={item.id} className="flex gap-3 items-start py-3 border-b border-zinc-50 last:border-b-0">
-                    <div className="w-14 h-14 rounded-xl overflow-hidden bg-zinc-50 shrink-0 border border-zinc-100">
+                  <div key={item.id} className="flex gap-3 items-start py-3 border-b border-kirti-border/40 last:border-b-0">
+                    <div className="w-14 h-14 rounded-sm overflow-hidden bg-kirti-surface shrink-0 border border-kirti-border">
                       {item.images[0] && (
                         <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-body text-sm font-semibold text-zinc-900 truncate">{item.name}</p>
-                      <p className="font-body text-xs text-zinc-400">₹{item.price} × {item.quantity}</p>
-                      <p className="font-heading text-sm font-bold text-violet-600 mt-0.5">
+                      <p className="font-heading font-bold text-xs text-kirti-cobalt truncate">{item.name}</p>
+                      <p className="font-mono text-[10px] text-kirti-muted mt-0.5">₹{item.price.toLocaleString()} × {item.quantity}</p>
+                      <p className="font-mono text-xs font-bold text-kirti-orange mt-1">
                         ₹{(item.quantity * item.price).toLocaleString('en-IN')}
                       </p>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <button onClick={() => onRemove(item.id)} className="text-zinc-300 hover:text-rose-500 transition-colors">
-                        <Trash2 size={15} />
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <button onClick={() => onRemove(item.id)} className="text-kirti-muted hover:text-kirti-rose transition-colors">
+                        <Trash2 size={13} />
                       </button>
-                      <div className="flex items-center gap-1 bg-zinc-50 rounded-lg p-0.5">
+                      <div className="flex items-center gap-1 bg-kirti-surface border border-kirti-border rounded-sm p-0.5">
                         <button
                           onClick={() => onUpdateQuantity(item.id, -1)}
-                          className="w-6 h-6 rounded-md bg-white border border-zinc-200 text-zinc-600 flex items-center justify-center hover:border-violet-300 hover:text-violet-600 transition-colors text-xs font-bold"
+                          className="w-5 h-5 rounded-sm bg-white border border-kirti-border text-kirti-cobalt flex items-center justify-center hover:border-kirti-orange hover:text-kirti-orange transition-colors text-xs font-bold"
                         >
-                          <Minus size={10} />
+                          <Minus size={8} />
                         </button>
-                        <span className="w-6 text-center font-body text-xs font-semibold text-zinc-900">{item.quantity}</span>
+                        <span className="w-6 text-center font-mono text-[11px] font-bold text-kirti-cobalt">{item.quantity}</span>
                         <button
                           onClick={() => onUpdateQuantity(item.id, 1)}
-                          className="w-6 h-6 rounded-md bg-white border border-zinc-200 text-zinc-600 flex items-center justify-center hover:border-violet-300 hover:text-violet-600 transition-colors text-xs font-bold"
+                          className="w-5 h-5 rounded-sm bg-white border border-kirti-border text-kirti-cobalt flex items-center justify-center hover:border-kirti-orange hover:text-kirti-orange transition-colors text-xs font-bold"
                         >
-                          <Plus size={10} />
+                          <Plus size={8} />
                         </button>
                       </div>
                     </div>
@@ -129,20 +129,24 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="px-6 py-5 border-t border-zinc-100 space-y-4">
+              <div className="px-6 py-5 border-t border-kirti-border space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="font-body text-sm text-zinc-500">Total</span>
-                  <span className="font-heading text-xl font-bold text-zinc-900">₹{total.toLocaleString('en-IN')}</span>
+                  <span className="font-mono text-xs uppercase tracking-wider font-bold text-kirti-muted">Estimated Total</span>
+                  <span className="font-mono text-lg font-bold text-kirti-cobalt">₹{total.toLocaleString('en-IN')}</span>
                 </div>
-                <div className="bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 flex gap-2">
-                  <span className="text-amber-500 text-sm shrink-0">⚠</span>
-                  <p className="font-body text-xs text-amber-700">Pre-booking only — no payment required at checkout.</p>
+                
+                <div className="bg-kirti-amber-light border border-kirti-amber/20 rounded-sm px-4 py-3 flex gap-2">
+                  <span className="text-kirti-amber text-xs shrink-0 select-none">⚠️</span>
+                  <p className="font-sans text-[11px] text-kirti-amber leading-relaxed font-semibold">
+                    PRE-BOOKING MODE: Allocation request only. Zero payment due at dispatch checkout.
+                  </p>
                 </div>
+                
                 <button
                   onClick={handleProceed}
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white font-body font-semibold text-sm py-3.5 rounded-2xl transition-all duration-200 hover:shadow-[0_8px_30px_rgba(124,58,237,0.4)] active:scale-95 flex items-center justify-center gap-2"
+                  className="w-full bg-kirti-orange hover:bg-kirti-orange-hover text-white font-mono text-xs font-bold tracking-wider uppercase py-3.5 rounded-sm shadow-[2px_2px_0px_rgba(15,29,54,1)] active:translate-y-[1px] transition-all flex items-center justify-center gap-2"
                 >
-                  Proceed to Book <ArrowRight size={16} />
+                  Proceed to Secure Allocation <ArrowRight size={14} />
                 </button>
               </div>
             )}
